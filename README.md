@@ -1,6 +1,7 @@
 # Landing page (seller only)
 
-The ExtensionKit marketing site, published to GitHub Pages from the public `extensionkit` repo.
+The ExtensionKit marketing site, live at https://getextensionkit.github.io/ — published to GitHub Pages from the
+public `getextensionkit/getextensionkit.github.io` repo (git remote `landing`).
 **Do not ship this folder to buyers** — exclude `landing/` when delivering the boilerplate.
 
 Publish changes:
