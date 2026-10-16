@@ -3,370 +3,403 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ExtensionKit — Ship a paid Chrome extension in a weekend</title>
-  <meta name="description" content="Production-ready Chrome extension boilerplate (Manifest V3) with React, Supabase auth, a Pro paywall and Stripe or Lemon Squeezy payments already wired together." />
-  <meta property="og:title" content="ExtensionKit — Ship a paid Chrome extension in a weekend" />
-  <meta property="og:description" content="Manifest V3 + React + Supabase auth + paywall + payments, already wired together." />
+  <title>ExtensionKit — Chrome extension boilerplate with auth and payments</title>
+  <meta name="description" content="A Manifest V3 boilerplate with Supabase auth, a Pro paywall and Stripe or Lemon Squeezy payments already wired across popup, service worker and content scripts." />
+  <meta property="og:title" content="ExtensionKit" />
+  <meta property="og:description" content="The boring parts of a paid Chrome extension, already done." />
   <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#0b0f1a" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236366f1'/%3E%3Cpath d='M10 9h12v3.5h-8v2h7v3.5h-7v2h8V23H10z' fill='white'/%3E%3C/svg%3E" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#f3efe6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2317150f'/%3E%3Cpath d='M9 8h14v4H13.5v2.5H21v3.5h-7.5V20H23v4H9z' fill='%23f3efe6'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0b0f1a;
-      --bg-elev: #111827;
-      --bg-card: #131a2a;
-      --border: #1f2a3d;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --dim: #64748b;
-      --accent: #6366f1;
-      --accent-2: #818cf8;
-      --pro-1: #fbbf24;
-      --pro-2: #f97316;
-      --ok: #34d399;
-      --err: #f87171;
-      --radius: 14px;
-      --max: 1120px;
+      --paper: #f3efe6;
+      --paper-2: #ebe6da;
+      --ink: #17150f;
+      --ink-2: #3d3a33;
+      --muted: #6b665b;
+      --rule: #d5cebf;
+      --accent: #d9481e;
+      --accent-ink: #b33a14;
+      --ok: #2f7d4f;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: Geist, system-ui, sans-serif;
+      --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+      --max: 1180px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
-    code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .02em; }
+    .label { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    hr { border: 0; border-top: 1px solid var(--rule); }
 
-    /* Nav */
-    nav { position: sticky; top: 0; z-index: 50; background: rgba(11, 15, 26, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; }
-    .logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; font-size: 15px; color: #fff; }
-    .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
-    .nav-links a:hover { color: var(--text); }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      border: 0; border-radius: 10px; cursor: pointer; font: inherit; font-weight: 600;
-      padding: 12px 20px; transition: transform .15s, filter .15s, background .15s;
-    }
-    .btn:hover { filter: brightness(1.1); }
-    .btn:active { transform: translateY(1px); }
-    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 24px -8px rgba(99, 102, 241, .6); }
-    .btn-sm { padding: 8px 14px; font-size: 14px; }
+    /* Header */
+    header.top { border-bottom: 1px solid var(--rule); }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 24px; }
+    .brand { font-family: var(--mono); font-weight: 500; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .brand i { width: 10px; height: 10px; background: var(--accent); display: inline-block; }
+    header nav { display: flex; gap: 28px; font-size: 14px; color: var(--ink-2); }
+    header nav a { text-decoration: none; }
+    header nav a:hover { color: var(--accent-ink); }
+    .ver { color: var(--muted); }
 
     /* Hero */
-    .hero { position: relative; padding: 88px 0 72px; text-align: center; }
-    .hero::before {
-      content: ''; position: absolute; inset: -200px 0 auto; height: 600px; z-index: -1;
-      background: radial-gradient(600px 300px at 50% 30%, rgba(99, 102, 241, .25), transparent 70%);
-    }
-    .badge {
-      display: inline-flex; gap: 8px; align-items: center; padding: 6px 14px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--bg-elev); font-size: 13px; color: var(--muted);
-    }
-    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
-    h1 { font-size: clamp(36px, 6vw, 64px); line-height: 1.05; letter-spacing: -0.035em; font-weight: 800; margin: 24px auto 20px; max-width: 860px; }
-    h1 .grad { background: linear-gradient(90deg, var(--accent-2), #c084fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lead { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 640px; margin: 0 auto 36px; }
+    .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; padding-top: 72px; padding-bottom: 88px; align-items: start; }
+    .hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 6.4vw, 84px); line-height: .98; letter-spacing: -.015em; margin: 20px 0 28px; }
+    .hero h1 em { color: var(--accent); }
+    .hero p.lead { font-size: 18px; color: var(--ink-2); max-width: 520px; }
+    .stack { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+    .stack span { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+    .stack span::before { content: '→ '; color: var(--accent); }
 
-    /* Waitlist form */
-    .waitlist { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; }
-    .waitlist input[type=email] {
-      flex: 1; min-width: 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg-elev); color: var(--text); font: inherit; outline: none; transition: border-color .15s;
-    }
-    .waitlist input[type=email]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, .25); }
+    form.waitlist { margin-top: 36px; display: flex; max-width: 480px; border: 1px solid var(--ink); background: #fbf9f4; }
+    form.waitlist input[type=email] { flex: 1; min-width: 0; border: 0; background: transparent; padding: 15px 16px; font: 15px var(--sans); color: var(--ink); outline: none; }
+    form.waitlist input[type=email]::placeholder { color: #9a9486; }
+    form.waitlist:focus-within { box-shadow: 4px 4px 0 var(--ink); }
+    form.waitlist button { border: 0; border-left: 1px solid var(--ink); background: var(--ink); color: var(--paper); font: 500 14px var(--sans); padding: 0 22px; cursor: pointer; white-space: nowrap; }
+    form.waitlist button:hover { background: var(--accent); }
+    form.waitlist button:disabled { opacity: .6; cursor: wait; }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-    .form-note { font-size: 13px; color: var(--dim); margin-top: 12px; min-height: 20px; }
-    .form-note.ok { color: var(--ok); }
-    .form-note.err { color: var(--err); }
+    .note { margin-top: 12px; font-size: 13px; color: var(--muted); min-height: 20px; }
+    .note.ok { color: var(--ok); }
+    .note.err { color: var(--accent-ink); }
 
-    /* Browser mock */
-    .mock { margin: 64px auto 0; max-width: 960px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-elev); box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .6); overflow: hidden; text-align: left; }
-    .mock-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-    .mock-dots { display: flex; gap: 6px; }
-    .mock-dots span { width: 11px; height: 11px; border-radius: 50%; background: #334155; }
-    .mock-url { flex: 1; background: var(--bg); border-radius: 8px; padding: 6px 12px; font-size: 13px; color: var(--dim); }
-    .mock-ext { width: 26px; height: 26px; border-radius: 6px; background: #334155; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
-    .mock-body { position: relative; height: 420px; background: repeating-linear-gradient(180deg, transparent 0 34px, rgba(148, 163, 184, .04) 34px 35px), var(--bg); }
-    .mock-lines { padding: 40px; display: grid; gap: 14px; max-width: 46%; }
-    .mock-lines div { height: 12px; border-radius: 6px; background: #1e293b; }
-    .mock-popup {
-      position: absolute; top: 12px; right: 16px; width: 250px; padding: 18px; border-radius: 12px;
-      background: #0f172a; border: 1px solid var(--border); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, .6);
-      font-size: 12px; display: grid; gap: 10px;
-    }
-    .mock-popup h4 { font-size: 13px; text-align: center; }
-    .mp-row { display: flex; align-items: center; justify-content: space-between; background: #1e293b; padding: 10px; border-radius: 8px; }
-    .mp-row small { color: var(--muted); display: block; font-size: 10px; }
-    .mp-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 11px; margin-right: 8px; }
-    .mp-upgrade { background: linear-gradient(90deg, var(--pro-1), var(--pro-2)); color: #0b0f1a; font-weight: 700; padding: 5px 9px; border-radius: 6px; font-size: 10px; }
-    .mock-modal {
-      position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); width: 280px; padding: 22px;
-      border-radius: 14px; background: #0f172a; border: 1px solid var(--border); box-shadow: 0 30px 60px -10px rgba(0, 0, 0, .7);
-    }
-    .mm-star { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--pro-1), var(--pro-2)); display: grid; place-items: center; margin-bottom: 12px; }
-    .mock-modal h5 { font-size: 16px; margin-bottom: 4px; }
-    .mock-modal p { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
-    .mm-btn { text-align: center; padding: 10px; border-radius: 8px; background: linear-gradient(90deg, var(--pro-1), var(--pro-2)); color: #0b0f1a; font-weight: 700; font-size: 13px; }
-    .mock-fab { position: absolute; right: 18px; bottom: 18px; background: var(--accent); padding: 9px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-    .mock-fab::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
-    .mock-overlay { position: absolute; inset: 0; background: rgba(2, 6, 23, .55); }
+    /* Product specimen (faithful replicas of the real extension UI) */
+    .specimen { position: relative; border: 1px solid var(--rule); background: var(--paper-2); height: 520px; overflow: hidden; }
+    .specimen .page { position: absolute; inset: 0; padding: 32px; }
+    .specimen .page div { height: 9px; background: #d9d2c3; margin-bottom: 14px; }
+    .specimen .scrim { position: absolute; inset: 0; background: rgba(23, 21, 15, .42); }
+    .ui { font-family: Geist, system-ui, sans-serif; color: #fff; }
+    .popup { position: absolute; top: 22px; right: 22px; width: 248px; background: #0f172a; padding: 18px; display: grid; gap: 10px; font-size: 12px; box-shadow: 0 18px 40px -12px rgba(0,0,0,.5); }
+    .popup h4 { font-size: 13px; text-align: center; font-weight: 600; }
+    .popup .sub { text-align: center; color: #94a3b8; font-size: 10.5px; margin-top: -6px; }
+    .row { background: #1e293b; border-radius: 7px; padding: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .row small { display: block; color: #94a3b8; font-size: 10px; }
+    .av { width: 26px; height: 26px; border-radius: 50%; background: #4f46e5; display: grid; place-items: center; font-weight: 700; font-size: 11px; flex: none; }
+    .up { background: linear-gradient(90deg, #fbbf24, #f97316); color: #0b0f1a; font-weight: 700; font-size: 10px; padding: 5px 8px; border-radius: 5px; }
+    .modal { position: absolute; left: 34px; bottom: 34px; width: 286px; background: #0f172a; border-radius: 14px; padding: 22px; box-shadow: 0 30px 60px -16px rgba(0,0,0,.6); }
+    .modal .star { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #fbbf24, #f97316); display: grid; place-items: center; margin-bottom: 12px; }
+    .modal h5 { font-size: 17px; font-weight: 700; }
+    .modal p { color: #94a3b8; font-size: 12px; margin: 3px 0 12px; }
+    .modal li { list-style: none; font-size: 12px; color: #e2e8f0; margin-bottom: 5px; }
+    .modal li::before { content: '✓ '; color: #34d399; }
+    .modal .cta { margin-top: 12px; text-align: center; padding: 10px; border-radius: 8px; background: linear-gradient(90deg, #fbbf24, #f97316); color: #0b0f1a; font-weight: 700; font-size: 13px; }
+    .fab { position: absolute; right: 22px; bottom: 22px; background: #4f46e5; border-radius: 999px; padding: 10px 15px; font-size: 12px; font-weight: 600; display: flex; gap: 7px; align-items: center; }
+    .fab::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #34d399; }
+    .tag { position: absolute; font-family: var(--mono); font-size: 11px; color: var(--ink); background: var(--paper); border: 1px solid var(--ink); padding: 3px 7px; white-space: nowrap; }
+    .tag::before { content: attr(data-n); color: var(--accent); margin-right: 6px; }
+    @media (max-width: 1100px) { .tag { display: none; } }
+    .caption { margin-top: 12px; display: flex; justify-content: space-between; gap: 16px; }
 
     /* Sections */
-    section { padding: 88px 0; }
-    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 12px; }
-    h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px; }
-    .section-lead { color: var(--muted); max-width: 620px; font-size: 17px; }
-    .grid { display: grid; gap: 16px; margin-top: 48px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color .2s, transform .2s; }
-    .card:hover { border-color: #2f3d57; transform: translateY(-2px); }
-    .card-icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: rgba(99, 102, 241, .12); color: var(--accent-2); margin-bottom: 16px; }
-    .card h3 { font-size: 17px; margin-bottom: 8px; letter-spacing: -0.01em; }
-    .card p { color: var(--muted); font-size: 15px; }
-    .card code { font-size: 13px; color: var(--accent-2); background: rgba(99, 102, 241, .1); padding: 1px 6px; border-radius: 5px; }
+    section { padding: 96px 0; border-top: 1px solid var(--rule); }
+    .sec-head { display: grid; grid-template-columns: 240px 1fr; gap: 32px; margin-bottom: 56px; }
+    .sec-head h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 52px); line-height: 1.04; letter-spacing: -.01em; max-width: 760px; }
+    .sec-head p { color: var(--ink-2); max-width: 620px; margin-top: 16px; font-size: 17px; }
 
-    /* Code + steps */
-    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-    .split > * { min-width: 0; }
-    .steps { display: grid; gap: 24px; margin-top: 32px; }
-    .step { display: flex; gap: 16px; }
-    .step-n { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-elev); display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--accent-2); }
-    .step h3 { font-size: 16px; margin-bottom: 4px; }
-    .step p { color: var(--muted); font-size: 15px; }
-    pre.code { background: #0d1321; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; font-size: 14px; line-height: 1.7; overflow-x: auto; }
-    .tok-k { color: #c084fc; } .tok-s { color: #86efac; } .tok-f { color: #93c5fd; } .tok-c { color: var(--dim); }
+    /* File tree */
+    .tree { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .tree-list { grid-column: 2; border-top: 1px solid var(--ink); }
+    .tree-row { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+    .tree-row code { font-family: var(--mono); font-size: 14px; }
+    .tree-row code b { font-weight: 500; color: var(--accent-ink); }
+    .tree-row p { color: var(--ink-2); font-size: 15px; }
 
-    /* Included */
-    .included { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px 32px; margin-top: 40px; list-style: none; }
-    .included li { display: flex; gap: 10px; color: var(--muted); font-size: 15px; }
-    .included li::before { content: '✓'; color: var(--ok); font-weight: 700; }
+    /* Flow */
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--ink); }
+    .step { padding: 24px 22px 28px; border-right: 1px solid var(--ink); position: relative; background: #fbf9f4; }
+    .step:last-child { border-right: 0; }
+    .step .n { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    .step h3 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; margin: 10px 0 10px; }
+    .step p { font-size: 14px; color: var(--ink-2); }
+    .step code { font-family: var(--mono); font-size: 12px; background: var(--paper-2); padding: 1px 5px; }
+    .flow-note { margin-top: 16px; }
+
+    /* Code */
+    .code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    figure.code { border: 1px solid var(--ink); background: #1b1913; color: #e9e4d8; min-width: 0; }
+    figure.code figcaption { font-family: var(--mono); font-size: 12px; color: #a39d8f; padding: 10px 16px; border-bottom: 1px solid #3a362c; display: flex; justify-content: space-between; }
+    figure.code pre { font-family: var(--mono); font-size: 13.5px; line-height: 1.7; padding: 18px 16px 20px; overflow-x: auto; }
+    .k { color: #f0a17f; } .s { color: #b7cf8a; } .f { color: #e9d59a; } .c { color: #8d877a; } .t { color: #9fc3d6; }
+
+    /* Scope */
+    .scope { display: grid; grid-template-columns: 240px 1fr 1fr; gap: 32px; }
+    .scope h3 { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; padding-bottom: 12px; border-bottom: 1px solid var(--ink); margin-bottom: 4px; }
+    .scope ul { list-style: none; }
+    .scope li { padding: 11px 0; border-bottom: 1px solid var(--rule); font-size: 15px; display: flex; gap: 12px; }
+    .scope .yes li::before { content: '+'; font-family: var(--mono); color: var(--ok); }
+    .scope .no li { color: var(--muted); }
+    .scope .no li::before { content: '–'; font-family: var(--mono); }
+
+    /* Note from the author */
+    .letter { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+    .letter blockquote { grid-column: 2; font-family: var(--serif); font-size: clamp(24px, 2.8vw, 32px); line-height: 1.3; max-width: 760px; }
+    .letter cite { grid-column: 2; font-style: normal; font-family: var(--mono); font-size: 13px; color: var(--muted); }
 
     /* FAQ */
-    .faq { max-width: 760px; margin: 40px auto 0; display: grid; gap: 12px; }
-    details { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; }
-    summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
-    summary::-webkit-details-marker { display: none; }
-    summary::after { content: '+'; color: var(--dim); font-size: 20px; line-height: 1; transition: transform .2s; }
-    details[open] summary::after { transform: rotate(45deg); }
-    details p { color: var(--muted); margin-top: 12px; font-size: 15px; }
+    .faq { display: grid; grid-template-columns: 240px 1fr 1fr; gap: 0 32px; }
+    .faq dl { display: contents; }
+    .qa { padding: 20px 0; border-top: 1px solid var(--rule); }
+    .qa dt { font-weight: 600; margin-bottom: 6px; }
+    .qa dd { color: var(--ink-2); font-size: 15px; }
+    .faq .spacer { grid-column: 1; }
 
-    /* CTA */
-    .cta { text-align: center; border: 1px solid var(--border); border-radius: 24px; padding: 64px 24px; background: radial-gradient(500px 200px at 50% 0%, rgba(99, 102, 241, .2), transparent 70%), var(--bg-card); }
-    .cta .section-lead { margin: 0 auto 32px; }
+    /* Closing */
+    .closing { text-align: left; }
+    .closing h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 6vw, 76px); line-height: 1; letter-spacing: -.015em; max-width: 900px; }
+    .closing h2 em { color: var(--accent); }
 
-    footer { border-top: 1px solid var(--border); padding: 32px 0; color: var(--dim); font-size: 14px; }
-    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    footer { border-top: 1px solid var(--ink); padding: 28px 0 40px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
 
-    @media (max-width: 860px) {
-      .split { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      .mock-popup { display: none; }
-      .mock-lines { max-width: 100%; }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; padding-top: 48px; }
+      .sec-head, .tree, .letter, .scope, .faq { grid-template-columns: 1fr; }
+      .tree-list, .letter blockquote, .letter cite { grid-column: 1; }
+      .faq .spacer { display: none; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .step:nth-child(2) { border-right: 0; }
+      .step:nth-child(-n+2) { border-bottom: 1px solid var(--ink); }
+      .code-grid { grid-template-columns: 1fr; }
+      header nav { display: none; }
     }
-    @media (max-width: 520px) {
-      .waitlist { flex-direction: column; }
-      .hero { padding-top: 56px; }
-      section { padding: 64px 0; }
-      .mock-body { height: 360px; }
+    @media (max-width: 560px) {
+      .specimen { height: 470px; }
+      .popup { right: 12px; top: 12px; width: 220px; }
+      .modal { left: 12px; bottom: 12px; width: 250px; }
+      .fab, .tag { display: none; }
+      .tree-row { grid-template-columns: 1fr; gap: 4px; }
+      .flow { grid-template-columns: 1fr; }
+      .step { border-right: 0 !important; border-bottom: 1px solid var(--ink); }
+      .step:last-child { border-bottom: 0; }
+      form.waitlist { flex-direction: column; }
+      form.waitlist button { border-left: 0; border-top: 1px solid var(--ink); padding: 14px; }
+      section { padding: 72px 0; }
     }
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; scroll-behavior: auto !important; }
-    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
 <body>
-  <nav>
+  <header class="top">
     <div class="wrap">
-      <a href="#" class="logo"><span class="logo-mark">E</span>ExtensionKit</a>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#how">How it works</a>
+      <a class="brand" href="#"><i></i>extensionkit</a>
+      <nav>
+        <a href="#inside">What's inside</a>
+        <a href="#payments">Payments</a>
+        <a href="#code">Code</a>
         <a href="#faq">FAQ</a>
-      </div>
-      <a href="#join" class="btn btn-primary btn-sm">Join the waitlist</a>
-    </div>
-  </nav>
-
-  <header class="hero">
-    <div class="wrap">
-      <span class="badge"><span class="dot"></span>Manifest V3 · React · Supabase · Payments</span>
-      <h1>Ship a <span class="grad">paid Chrome extension</span> in a weekend, not a month.</h1>
-      <p class="lead">ExtensionKit is a production-ready boilerplate with auth, a Pro paywall and payments already wired together, so you can spend your time on the feature people pay for.</p>
-
-      <form class="waitlist" data-waitlist novalidate>
-        <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address" />
-        <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-        <button class="btn btn-primary" type="submit">Get early access</button>
-      </form>
-      <p class="form-note" data-note>Join the waitlist for an early-bird launch discount. No spam.</p>
-
-      <div class="mock" aria-hidden="true">
-        <div class="mock-bar">
-          <div class="mock-dots"><span></span><span></span><span></span></div>
-          <div class="mock-url">any-website.com</div>
-          <div class="mock-ext">S</div>
-        </div>
-        <div class="mock-body">
-          <div class="mock-lines"><div style="width:70%"></div><div></div><div style="width:85%"></div><div style="width:60%"></div><div></div><div style="width:40%"></div></div>
-          <div class="mock-overlay"></div>
-          <div class="mock-modal">
-            <div class="mm-star">★</div>
-            <h5>Premium feature</h5>
-            <p>Upgrade to Pro to unlock this action on every website.</p>
-            <div class="mm-btn">Upgrade to Pro</div>
-          </div>
-          <div class="mock-popup">
-            <h4>Your Extension</h4>
-            <div class="mp-row"><div style="display:flex;align-items:center"><span class="mp-avatar">A</span><div><small>Signed in as</small>ada@example.com</div></div></div>
-            <div class="mp-row"><div><small>Your plan</small>Free</div><span class="mp-upgrade">Upgrade to Pro</span></div>
-          </div>
-          <div class="mock-fab">Your action</div>
-        </div>
-      </div>
+      </nav>
+      <span class="mono ver">v0.1 · Manifest V3</span>
     </div>
   </header>
 
-  <section id="features">
-    <div class="wrap">
-      <p class="eyebrow">The hard parts, done</p>
-      <h2>Everything between "hello world" and your first paying user.</h2>
-      <p class="section-lead">Getting auth, a paywall and payments to work across a popup, a service worker and content scripts is the tedious part. It's already built and tested.</p>
-
-      <div class="grid">
-        <article class="card">
-          <div class="card-icon">⚡</div>
-          <h3>Manifest V3 with hot reload</h3>
-          <p>React, TypeScript and Tailwind on Vite. The manifest is compiled for you and the popup and content scripts reload as you code.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🔐</div>
-          <h3>Auth that survives the service worker</h3>
-          <p>Supabase email auth with the session stored in <code>chrome.storage</code>. Sign-up confirmation links land on a page inside your extension and sign the user in.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">★</div>
-          <h3>Paywall in one line</h3>
-          <p>Ask <code>CHECK_PRO_STATUS</code> from anywhere. Free users get a polished upgrade modal; Pro users get the feature.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">💳</div>
-          <h3>Payments via webhooks</h3>
-          <p>Stripe or Lemon Squeezy, your pick. Supabase Edge Functions verify each webhook signature and upgrade or downgrade the user, including refunds and cancellations.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🔁</div>
-          <h3>Typed messaging</h3>
-          <p>Popup, background and content scripts talk through one typed message map. Wrong payloads fail at compile time, not in production.</p>
-        </article>
-        <article class="card">
-          <div class="card-icon">🧩</div>
-          <h3>UI that never breaks the page</h3>
-          <p>In-page UI renders in a Shadow DOM with its own Tailwind styles, so host sites can't break your UI and your CSS can't break theirs.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="how">
-    <div class="wrap split">
+  <main>
+    <div class="wrap hero">
       <div>
-        <p class="eyebrow">How it works</p>
-        <h2>From clone to checkout in three steps.</h2>
-        <div class="steps">
-          <div class="step"><span class="step-n">1</span><div><h3>Add your keys</h3><p>Create a Supabase project and paste two keys into <code>.env</code>. Step-by-step guides cover the rest.</p></div></div>
-          <div class="step"><span class="step-n">2</span><div><h3>Build your feature</h3><p>Replace the demo action with the thing your users want. Auth, storage and messaging are ready to use.</p></div></div>
-          <div class="step"><span class="step-n">3</span><div><h3>Start charging</h3><p>Create a product in Stripe or Lemon Squeezy, deploy the webhook function, and Pro access turns on as soon as someone pays.</p></div></div>
+        <p class="label">A Chrome extension boilerplate</p>
+        <h1>The boring parts of a <em>paid</em> extension, already done.</h1>
+        <p class="lead">Sign-up, a Pro paywall and payments, wired across the popup, the service worker and content scripts. You write the feature people pay for; ExtensionKit handles who's allowed to use it.</p>
+        <div class="stack">
+          <span>React + TypeScript + Vite</span>
+          <span>Supabase auth</span>
+          <span>Stripe or Lemon Squeezy</span>
+        </div>
+
+        <form class="waitlist" data-waitlist novalidate>
+          <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" required aria-label="Email address" />
+          <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button type="submit">Join the waitlist</button>
+        </form>
+        <p class="note" data-note>Launching soon. People on the list get the early-bird price.</p>
+      </div>
+
+      <div>
+        <div class="specimen" role="img" aria-label="The extension's popup showing a signed-in user on the Free plan, and the in-page paywall modal over a website.">
+          <div class="page">
+            <div style="width:62%"></div><div style="width:88%"></div><div style="width:74%"></div><div style="width:40%"></div>
+            <div style="width:80%;margin-top:30px"></div><div style="width:66%"></div><div style="width:90%"></div><div style="width:52%"></div>
+          </div>
+          <div class="scrim"></div>
+
+          <div class="modal ui">
+            <div class="star">★</div>
+            <h5>Premium feature</h5>
+            <p>This action is available to Pro users only.</p>
+            <ul><li>Unlimited actions on any website</li><li>Sync across devices</li><li>Priority support</li></ul>
+            <div class="cta">Upgrade to Pro</div>
+          </div>
+
+          <div class="popup ui">
+            <h4>ExtensionKit Demo</h4>
+            <p class="sub">React · Vite · TypeScript · Tailwind</p>
+            <div class="row" style="justify-content:flex-start"><span class="av">A</span><div><small>Signed in as</small>ada@example.com</div></div>
+            <div class="row"><div><small>Your plan</small>Free</div><span class="up">Upgrade to Pro</span></div>
+          </div>
+
+          <div class="fab ui">Run</div>
+
+          <span class="tag" data-n="01" style="top:236px;right:22px">src/popup/</span>
+          <span class="tag" data-n="02" style="top:22px;left:22px">src/content/PaywallModal.tsx ↓</span>
+        </div>
+        <div class="caption">
+          <span class="mono" style="color:var(--muted)">Fig. 1 — The demo extension, as shipped.</span>
+          <span class="mono" style="color:var(--muted)">Popup / in-page paywall</span>
         </div>
       </div>
-      <pre class="code" aria-label="Example code"><span class="tok-c">// content script: gate any feature behind Pro</span>
-<span class="tok-k">const</span> isPro = <span class="tok-k">await</span> <span class="tok-f">sendToBackground</span>(<span class="tok-s">'CHECK_PRO_STATUS'</span>)
+    </div>
 
-<span class="tok-k">if</span> (!isPro) {
-  <span class="tok-f">showPaywall</span>() <span class="tok-c">// opens checkout</span>
-  <span class="tok-k">return</span>
+    <section id="inside">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="label">What's inside</p>
+          <div>
+            <h2>One repository. Every piece has a job.</h2>
+            <p>No framework of our own to learn. It's a regular Vite + React project, and every file below is code you can read and change.</p>
+          </div>
+        </div>
+        <div class="tree">
+          <div class="tree-list">
+            <div class="tree-row"><code><b>src/content/</b>proAction.ts</code><p>Where your Pro feature goes. It runs on the page only after the user has been confirmed as Pro.</p></div>
+            <div class="tree-row"><code><b>src/</b>config.ts</code><p>Name, button label and paywall copy in one place.</p></div>
+            <div class="tree-row"><code><b>src/shared/</b>messages.ts</code><p>Typed messages between popup, background and tabs. A wrong payload fails at compile time.</p></div>
+            <div class="tree-row"><code><b>src/background/</b>auth.ts</code><p>Supabase sign-up and sign-in. The session lives in <span class="mono">chrome.storage</span>; pages only ever see the user's id and email.</p></div>
+            <div class="tree-row"><code><b>src/content/</b>FloatingButton.tsx</code><p>In-page UI in a Shadow DOM, so the host site's CSS can't break it. Users can drag it or hide it per site.</p></div>
+            <div class="tree-row"><code><b>supabase/</b>migrations/</code><p>The <span class="mono">profiles</span> table, row-level security, and a trigger that creates a profile on sign-up.</p></div>
+            <div class="tree-row"><code><b>supabase/</b>functions/</code><p>Webhook handlers for Stripe and Lemon Squeezy, with signature checks.</p></div>
+            <div class="tree-row"><code><b>docs/</b></code><p>Setup guides for each payment provider and for publishing to the Chrome Web Store, plus a privacy policy template.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="payments">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="label">Payments</p>
+          <div>
+            <h2>From "Upgrade" to Pro, without a server of your own.</h2>
+            <p>The checkout carries the user's id. When the payment clears, a Supabase Edge Function flips the flag the extension reads.</p>
+          </div>
+        </div>
+        <div class="flow">
+          <div class="step"><span class="n">01 — Extension</span><h3>User clicks Upgrade</h3><p>The background opens your checkout link, tagged with the Supabase user id.</p></div>
+          <div class="step"><span class="n">02 — Provider</span><h3>They pay</h3><p>Stripe Checkout or Lemon Squeezy handles cards, taxes and receipts.</p></div>
+          <div class="step"><span class="n">03 — Edge Function</span><h3>Webhook is verified</h3><p>The signature is checked, then <code>profiles.is_pro</code> is set with the service role.</p></div>
+          <div class="step"><span class="n">04 — Extension</span><h3>Pro unlocks</h3><p>The next <code>CHECK_PRO_STATUS</code> returns true. Refunds and cancellations turn it off again.</p></div>
+        </div>
+        <p class="flow-note mono" style="color:var(--muted)">Lemon Squeezy works in countries where Stripe isn't available. Switching providers is one line in .env.</p>
+      </div>
+    </section>
+
+    <section id="code">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="label">Code</p>
+          <div>
+            <h2>Gating a feature takes one message.</h2>
+            <p>Declare a message once and call it from anywhere, with types on both sides.</p>
+          </div>
+        </div>
+        <div class="code-grid">
+          <figure class="code">
+            <figcaption><span>src/content/FloatingButton.tsx</span><span>content script</span></figcaption>
+<pre><span class="k">const</span> isPro = <span class="k">await</span> <span class="f">sendToBackground</span>(<span class="s">'CHECK_PRO_STATUS'</span>)
+
+<span class="k">if</span> (!isPro) {
+  <span class="f">setShowPaywall</span>(<span class="k">true</span>) <span class="c">// upgrade modal</span>
+  <span class="k">return</span>
 }
 
-<span class="tok-f">runYourProFeature</span>()</pre>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <p class="eyebrow">What's included</p>
-      <h2>Full source code, yours to ship.</h2>
-      <ul class="included">
-        <li>Popup with login, sign-up and account panel</li>
-        <li>Content script UI isolated in Shadow DOM</li>
-        <li>Background service worker with typed handlers</li>
-        <li>Supabase auth with persistent sessions</li>
-        <li>Profiles table with row-level security</li>
-        <li>Pro paywall modal and plan card</li>
-        <li>Stripe webhook Edge Function</li>
-        <li>Lemon Squeezy webhook Edge Function</li>
-        <li>Email confirmation landing page</li>
-        <li>Pinned extension ID for stable auth redirects</li>
-        <li>Step-by-step payment setup guides</li>
-        <li>Strict TypeScript across the codebase</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="faq">
-    <div class="wrap">
-      <p class="eyebrow" style="text-align:center">FAQ</p>
-      <h2 style="text-align:center">Questions</h2>
-      <div class="faq">
-        <details>
-          <summary>Who is ExtensionKit for?</summary>
-          <p>Developers who want to sell a Chrome extension, whether that's a side project, a micro-SaaS or a client project, without spending weeks wiring auth and payments into Manifest V3.</p>
-        </details>
-        <details>
-          <summary>Do I need a Stripe account?</summary>
-          <p>No. Stripe and Lemon Squeezy are both supported, and you switch between them with one line in <code>.env</code>. Lemon Squeezy is a good option if Stripe isn't available in your country.</p>
-        </details>
-        <details>
-          <summary>What exactly do I get?</summary>
-          <p>The complete source code plus setup guides for Supabase, Stripe and Lemon Squeezy. You own your copy and can change anything.</p>
-        </details>
-        <details>
-          <summary>Can I use it in multiple projects?</summary>
-          <p>Yes, including client work. The only thing you can't do is resell or redistribute the boilerplate itself.</p>
-        </details>
-        <details>
-          <summary>When does it launch?</summary>
-          <p>Soon. Everyone on the waitlist hears first and gets early-bird pricing.</p>
-        </details>
+<span class="k">await</span> <span class="f">runProAction</span>() <span class="c">// your feature</span></pre>
+          </figure>
+          <figure class="code">
+            <figcaption><span>src/shared/messages.ts</span><span>add your own</span></figcaption>
+<pre><span class="k">export interface</span> <span class="t">BackgroundMessages</span> {
+  CHECK_PRO_STATUS: { req: <span class="t">void</span>; res: <span class="t">boolean</span> }
+  OPEN_UPGRADE_PAGE: { req: <span class="t">void</span>; res: <span class="t">void</span> }
+  <span class="c">// e.g.</span>
+  SUMMARIZE: { req: { text: <span class="t">string</span> }; res: { summary: <span class="t">string</span> } }
+}</pre>
+          </figure>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="join">
-    <div class="wrap">
-      <div class="cta">
-        <h2>Stop rebuilding auth and payments.</h2>
-        <p class="section-lead">Join the waitlist to get early access and the launch discount.</p>
+    <section>
+      <div class="wrap scope">
+        <p class="label">Scope</p>
+        <div class="yes">
+          <h3>Included</h3>
+          <ul>
+            <li>Full source code</li>
+            <li>Email + password auth with confirmation</li>
+            <li>Pro paywall and plan card</li>
+            <li>Stripe and Lemon Squeezy webhooks</li>
+            <li>Script to pin your extension ID</li>
+            <li>Unit tests, ESLint and Prettier</li>
+            <li>Payment and Web Store guides</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h3>Not included (yet)</h3>
+          <ul>
+            <li>Firefox and Safari builds</li>
+            <li>Google / OAuth sign-in</li>
+            <li>Team or seat-based billing</li>
+            <li>Usage-based limits</li>
+            <li>Translations</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap letter">
+        <p class="label">Why this exists</p>
+        <blockquote>“Most of the work in a paid extension isn't the feature. It's keeping a session alive across a popup, a service worker that keeps going to sleep, and scripts running inside other people's websites — and then knowing who has paid. I built that part once, carefully, so you don't have to.”</blockquote>
+        <cite>— Ramiro Fernandez, maker of ExtensionKit</cite>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap faq">
+        <p class="label spacer">FAQ</p>
+        <div>
+          <div class="qa"><dt>Who is it for?</dt><dd>Developers who want to sell a Chrome extension — a side project, a micro-SaaS or client work — without spending weeks on auth and billing.</dd></div>
+          <div class="qa"><dt>Do I need Stripe?</dt><dd>No. Use Stripe or Lemon Squeezy; it's one setting. Lemon Squeezy also handles sales tax for you.</dd></div>
+          <div class="qa"><dt>Do I need a backend?</dt><dd>Only Supabase. Its free tier is enough to start, and the webhooks run as Edge Functions there.</dd></div>
+        </div>
+        <div>
+          <div class="qa"><dt>Can I use it for several products?</dt><dd>Yes, including client projects. You just can't resell the boilerplate itself.</dd></div>
+          <div class="qa"><dt>Is it a framework?</dt><dd>No. It's a plain Vite + React project. There's nothing to stay locked into.</dd></div>
+          <div class="qa"><dt>When does it launch?</dt><dd>Soon. The waitlist hears first and gets the early-bird price.</dd></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="join">
+      <div class="wrap closing">
+        <p class="label">Waitlist</p>
+        <h2 style="margin:20px 0 36px">Spend your weekend on the <em>feature</em>, not the plumbing.</h2>
         <form class="waitlist" data-waitlist novalidate>
-          <input type="email" name="email" placeholder="you@example.com" autocomplete="email" required aria-label="Email address" />
+          <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" required aria-label="Email address" />
           <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button class="btn btn-primary" type="submit">Get early access</button>
+          <button type="submit">Join the waitlist</button>
         </form>
-        <p class="form-note" data-note></p>
+        <p class="note" data-note></p>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <footer>
     <div class="wrap">
-      <span>© 2026 ExtensionKit</span>
+      <span class="mono">extensionkit · 2026</span>
       <span>Not affiliated with Google. Chrome is a trademark of Google LLC.</span>
     </div>
   </footer>
@@ -377,23 +410,22 @@
     const SUPABASE_URL = 'https://jrdttkjghrczdautwvej.supabase.co'
     const SUPABASE_KEY = 'sb_publishable_m553ISlAEV4Ms9IT3TjdQA_lVamr9BU'
     const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
-
     const source = (new URLSearchParams(location.search).get('ref') || 'landing').slice(0, 64)
 
     function setNote(note, text, tone) {
       note.textContent = text
-      note.className = 'form-note' + (tone ? ' ' + tone : '')
+      note.className = 'note' + (tone ? ' ' + tone : '')
     }
 
     document.querySelectorAll('[data-waitlist]').forEach((form) => {
       const note = form.nextElementSibling
+      const button = form.querySelector('button')
       form.addEventListener('submit', async (e) => {
         e.preventDefault()
         const email = form.email.value.trim().toLowerCase()
         if (form.company.value) return // honeypot: bots fill hidden fields
-        if (!EMAIL_RE.test(email)) return setNote(note, 'Please enter a valid email address.', 'err')
+        if (!EMAIL_RE.test(email)) return setNote(note, 'That email address doesn’t look right.', 'err')
 
-        const button = form.querySelector('button')
         button.disabled = true
         button.textContent = 'Joining…'
         try {
@@ -409,9 +441,9 @@
           })
           if (res.ok) {
             form.reset()
-            setNote(note, "You're on the list! We'll email you when ExtensionKit launches.", 'ok')
+            setNote(note, 'You’re on the list. I’ll email you when it launches.', 'ok')
           } else if (res.status === 409) {
-            setNote(note, "You're already on the list. We'll be in touch!", 'ok')
+            setNote(note, 'You’re already on the list.', 'ok')
           } else {
             throw new Error(`HTTP ${res.status}`)
           }
@@ -420,7 +452,7 @@
           setNote(note, 'Something went wrong. Please try again in a moment.', 'err')
         } finally {
           button.disabled = false
-          button.textContent = 'Get early access'
+          button.textContent = 'Join the waitlist'
         }
       })
     })
