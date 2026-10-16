@@ -136,6 +136,7 @@
 
     /* Code + steps */
     .split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .split > * { min-width: 0; }
     .steps { display: grid; gap: 24px; margin-top: 32px; }
     .step { display: flex; gap: 16px; }
     .step-n { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-elev); display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--accent-2); }
@@ -290,7 +291,7 @@
 <span class="tok-k">const</span> isPro = <span class="tok-k">await</span> <span class="tok-f">sendToBackground</span>(<span class="tok-s">'CHECK_PRO_STATUS'</span>)
 
 <span class="tok-k">if</span> (!isPro) {
-  <span class="tok-f">showPaywall</span>() <span class="tok-c">// opens checkout with the user id attached</span>
+  <span class="tok-f">showPaywall</span>() <span class="tok-c">// opens checkout</span>
   <span class="tok-k">return</span>
 }
 
