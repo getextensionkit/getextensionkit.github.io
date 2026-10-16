@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="img/hero.webp" media="(min-width: 641px)" />
+  <link rel="preload" as="image" href="img/demo-poster.webp" media="(min-width: 641px)" />
   <style>
     :root {
       --bg: #ffffff;
@@ -67,8 +67,29 @@
     .hero-row { display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 48px; align-items: end; margin-top: 32px; }
     .hero .lead { font-size: 20px; line-height: 1.5; color: var(--ink-2); max-width: 600px; }
     .shot { margin-top: 64px; }
-    .shot img { width: 100%; border-radius: 12px; box-shadow: 0 0 0 1px rgba(27, 31, 36, .09), 0 2px 4px rgba(27, 31, 36, .04), 0 24px 64px -12px rgba(27, 31, 36, .22); background: #fff; }
-    .shot figcaption { padding: 18px 0 32px; font-size: 14px; color: var(--ink-3); }
+    .frame { position: relative; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px rgba(27, 31, 36, .09), 0 2px 4px rgba(27, 31, 36, .04), 0 24px 64px -12px rgba(27, 31, 36, .22); }
+    .frame video { display: block; width: 100%; height: auto; aspect-ratio: 1800 / 1110; }
+    .frame .still { display: none; width: 100%; }
+    .pp { position: absolute; right: 14px; top: 56px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(27, 31, 36, .72); color: #fff; display: grid; place-items: center; cursor: pointer; opacity: 0; transition: opacity 150ms ease, background-color 150ms ease; -webkit-tap-highlight-color: transparent; }
+    .frame:hover .pp, .pp:focus-visible, .pp.paused { opacity: 1; }
+    .pp:hover { background: rgba(27, 31, 36, .9); }
+    .pp svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .pp .i-play { fill: currentColor; stroke: none; display: none; }
+    .pp.paused .i-play { display: block; }
+    .pp.paused .i-pause { display: none; }
+    .steps { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: 20px 0 36px; }
+    .steps button { position: relative; display: flex; gap: 10px; align-items: baseline; width: 100%; padding: 16px 0 4px; border: 0; background: none; font: 450 15px/1.4 var(--sans); color: var(--ink-3); text-align: left; cursor: pointer; transition: color 200ms ease; }
+    .steps button::before, .steps button::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; border-radius: 2px; background: var(--line-2); }
+    .steps button::after { background: var(--ink); transform-origin: left; transform: scaleX(var(--p, 0)); }
+    .steps button:hover { color: var(--ink-2); }
+    .steps button.on { color: var(--ink); }
+    .steps span { font-weight: 650; font-variant-numeric: tabular-nums; }
+    .still-cap { display: none; padding: 16px 0 28px; font-size: 14px; color: var(--ink-3); }
+    @media (max-width: 640px) {
+      .frame video, .pp, .steps { display: none; }
+      .frame .still { display: block; }
+      .still-cap { display: block; }
+    }
 
     /* Waitlist form */
     form.waitlist { display: flex; gap: 8px; }
@@ -275,11 +296,21 @@
           </div>
         </div>
         <figure class="shot">
-          <picture>
-            <source media="(max-width: 640px)" srcset="img/hero-crop.webp" width="1240" height="1480" />
-            <img src="img/hero.webp" width="2400" height="1480" alt="Chrome showing an article page. The ExtensionKit popup is open from the toolbar: signed in as ada@example.com on the Free plan, with an Upgrade to Pro button. A floating Run button sits in the page corner." fetchpriority="high" />
-          </picture>
-          <figcaption>The demo extension that ships with the code: popup, sign-in state, plan and the in-page button.</figcaption>
+          <div class="frame">
+            <video class="demo" id="demo" muted loop playsinline preload="none" poster="img/demo-poster.webp" width="1800" height="1110" aria-label="Demo: on an article page, a free user presses the extension's Run button and gets the paywall. After upgrading, the extension popup shows the Pro plan, and pressing Run again shows the word count and reading time computed on the server."></video>
+            <img class="still" src="img/hero-crop.webp" width="1240" height="1480" alt="Chrome showing an article page with the ExtensionKit popup open from the toolbar: signed in as ada@example.com on the Free plan, with an Upgrade to Pro button." />
+            <button class="pp" id="pp" type="button" aria-label="Pause the demo">
+              <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9" /></svg>
+              <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z" /></svg>
+            </button>
+          </div>
+          <ol class="steps" id="steps">
+            <li><button type="button" data-from="0" data-to="1.6"><span>1</span>A free user presses Run</button></li>
+            <li><button type="button" data-from="1.6" data-to="3.2"><span>2</span>The paywall opens</button></li>
+            <li><button type="button" data-from="3.2" data-to="7.4"><span>3</span>They pay, and the popup shows Pro</button></li>
+            <li><button type="button" data-from="7.4" data-to="13.2"><span>4</span>The Pro feature runs on the server</button></li>
+          </ol>
+          <figcaption class="still-cap">The demo extension that ships with the code, signed in on the free plan.</figcaption>
         </figure>
       </div>
     </section>
@@ -673,6 +704,64 @@ AGENTS.md         <span class="c">rules for coding agents</span>
         next.focus()
       })
     })
+
+    // Hero demo: plays muted on larger screens, pauses off-screen, never autoplays with reduced motion.
+    const demo = document.getElementById('demo')
+    const pp = document.getElementById('pp')
+    const stepButtons = [...document.querySelectorAll('#steps button')]
+    const wide = matchMedia('(min-width: 641px)')
+    const calm = matchMedia('(prefers-reduced-motion: reduce)')
+    let userPaused = calm.matches
+    let raf = 0
+
+    function paintSteps() {
+      const t = demo.currentTime
+      stepButtons.forEach((b) => {
+        const from = Number(b.dataset.from)
+        const to = Number(b.dataset.to)
+        const p = t >= to ? 1 : t <= from ? 0 : (t - from) / (to - from)
+        b.style.setProperty('--p', p)
+        b.classList.toggle('on', t >= from && t < to)
+      })
+      if (!demo.paused) raf = requestAnimationFrame(paintSteps)
+    }
+    function syncButton() {
+      pp.classList.toggle('paused', demo.paused)
+      pp.setAttribute('aria-label', demo.paused ? 'Play the demo' : 'Pause the demo')
+    }
+    function loadDemo() {
+      if (demo.src || !wide.matches) return
+      demo.src = 'img/demo.mp4'
+      demo.preload = 'auto'
+    }
+    demo.addEventListener('play', () => { syncButton(); cancelAnimationFrame(raf); paintSteps() })
+    demo.addEventListener('pause', () => { syncButton(); paintSteps() })
+    demo.addEventListener('seeked', paintSteps)
+    pp.addEventListener('click', () => {
+      loadDemo()
+      userPaused = !demo.paused
+      if (demo.paused) demo.play().catch(() => {})
+      else demo.pause()
+    })
+    stepButtons.forEach((b) => b.addEventListener('click', () => {
+      loadDemo()
+      demo.currentTime = Number(b.dataset.from) + 0.01
+      userPaused = false
+      demo.play().catch(() => {})
+    }))
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        if (!wide.matches) return
+        if (entry.isIntersecting) {
+          loadDemo()
+          if (!userPaused) demo.play().catch(() => {})
+        } else if (!demo.paused) {
+          demo.pause()
+        }
+      }, { threshold: 0.25 }).observe(demo)
+    }
+    syncButton()
+    paintSteps()
 
     // Hairline under the sticky nav once the page scrolls
     const nav = document.getElementById('nav')
