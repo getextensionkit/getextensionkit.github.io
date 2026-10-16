@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>document.documentElement.classList.add('js')</script>
   <style>
     :root {
       --paper: #f3efe6;
@@ -29,11 +30,17 @@
       --sans: Geist, system-ui, sans-serif;
       --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
       --max: 1180px;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+    body { background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
     a { color: inherit; }
+    h1, h2, h3, blockquote { text-wrap: balance; }
+    p, dd, li { text-wrap: pretty; }
+    ::selection { background: var(--accent); color: var(--paper); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
     .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .02em; }
     .label { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
@@ -45,9 +52,11 @@
     .brand { font-family: var(--mono); font-weight: 500; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 10px; }
     .brand i { width: 10px; height: 10px; background: var(--accent); display: inline-block; }
     header nav { display: flex; gap: 28px; font-size: 14px; color: var(--ink-2); }
-    header nav a { text-decoration: none; }
-    header nav a:hover { color: var(--accent-ink); }
-    .ver { color: var(--muted); }
+    header nav a { text-decoration: underline 1px transparent; text-underline-offset: 5px; padding: 10px 0; transition: color 150ms ease, text-decoration-color 150ms ease; }
+    @media (hover: hover) and (pointer: fine) {
+      header nav a:hover { color: var(--accent-ink); text-decoration-color: currentColor; }
+    }
+    .ver { color: var(--muted); font-variant-numeric: tabular-nums; }
 
     /* Hero */
     .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; padding-top: 72px; padding-bottom: 88px; align-items: start; }
@@ -58,17 +67,27 @@
     .stack span { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
     .stack span::before { content: '→ '; color: var(--accent); }
 
-    form.waitlist { margin-top: 36px; display: flex; max-width: 480px; border: 1px solid var(--ink); background: #fbf9f4; }
-    form.waitlist input[type=email] { flex: 1; min-width: 0; border: 0; background: transparent; padding: 15px 16px; font: 15px var(--sans); color: var(--ink); outline: none; }
-    form.waitlist input[type=email]::placeholder { color: #9a9486; }
+    .signup { margin-top: 36px; }
+    form.waitlist { display: flex; max-width: 480px; border: 1px solid var(--ink); background: #fbf9f4; transition: box-shadow 180ms var(--ease-out), border-color 150ms ease; }
+    form.waitlist input[type=email] { flex: 1; min-width: 0; border: 0; background: transparent; padding: 15px 16px; font: 16px var(--sans); color: var(--ink); outline: none; }
+    form.waitlist input[type=email]::placeholder { color: #8a8476; }
     form.waitlist:focus-within { box-shadow: 4px 4px 0 var(--ink); }
-    form.waitlist button { border: 0; border-left: 1px solid var(--ink); background: var(--ink); color: var(--paper); font: 500 14px var(--sans); padding: 0 22px; cursor: pointer; white-space: nowrap; }
-    form.waitlist button:hover { background: var(--accent); }
-    form.waitlist button:disabled { opacity: .6; cursor: wait; }
+    form.waitlist.err { border-color: var(--accent-ink); }
+    form.waitlist.err:focus-within { box-shadow: 4px 4px 0 var(--accent-ink); }
+    form.waitlist button { border: 0; border-left: 1px solid var(--ink); background: var(--ink); color: var(--paper); font: 500 14px var(--sans); padding: 0 22px; min-height: 52px; cursor: pointer; white-space: nowrap; transition: background-color 150ms ease, transform 120ms var(--ease-out); }
+    form.waitlist button:focus-visible { outline-offset: -5px; outline-color: var(--paper); }
+    @media (hover: hover) and (pointer: fine) {
+      form.waitlist button:hover { background: var(--accent); }
+    }
+    form.waitlist button:active { transform: scale(.97); }
+    form.waitlist button:disabled { background: var(--ink-2); cursor: progress; transform: none; }
+    form.waitlist.done button { background: var(--ok); }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
     .note { margin-top: 12px; font-size: 13px; color: var(--muted); min-height: 20px; }
     .note.ok { color: var(--ok); }
     .note.err { color: var(--accent-ink); }
+    @keyframes note-in { from { opacity: 0; transform: translateY(-4px); } }
+    .note.enter { animation: note-in 220ms var(--ease-out); }
 
     /* Product specimen (faithful replicas of the real extension UI) */
     .specimen { position: relative; border: 1px solid var(--rule); background: var(--paper-2); height: 520px; overflow: hidden; }
@@ -109,13 +128,18 @@
     .tree-row { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
     .tree-row code { font-family: var(--mono); font-size: 14px; }
     .tree-row code b { font-weight: 500; color: var(--accent-ink); }
+    .tree-row code { transition: color 150ms ease; }
+    @media (hover: hover) and (pointer: fine) {
+      .tree-row:hover code { color: var(--accent-ink); }
+    }
     .tree-row p { color: var(--ink-2); font-size: 15px; }
 
     /* Flow */
     .flow { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--ink); }
     .step { padding: 24px 22px 28px; border-right: 1px solid var(--ink); position: relative; background: #fbf9f4; }
     .step:last-child { border-right: 0; }
-    .step .n { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    .step::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--accent); transform-origin: left; }
+    .step .n { font-family: var(--mono); font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; }
     .step h3 { font-family: var(--serif); font-weight: 400; font-size: 26px; line-height: 1.1; margin: 10px 0 10px; }
     .step p { font-size: 14px; color: var(--ink-2); }
     .step code { font-family: var(--mono); font-size: 12px; background: var(--paper-2); padding: 1px 5px; }
@@ -182,7 +206,25 @@
       form.waitlist button { border-left: 0; border-top: 1px solid var(--ink); padding: 14px; }
       section { padding: 72px 0; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    /* Motion: content settles in once as it scrolls into view. Only when motion is welcome and JS runs;
+       otherwise everything is simply visible. --d is the stagger delay set by the observer. */
+    @media (prefers-reduced-motion: no-preference) {
+      .js [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity 600ms var(--ease-out) var(--d, 0ms), transform 600ms var(--ease-out) var(--d, 0ms); }
+      .js [data-reveal].in { opacity: 1; transform: none; }
+      .js .popup[data-reveal] { transform: translateY(-10px) scale(.98); transform-origin: top right; }
+      .js .modal[data-reveal] { transform: translateY(16px) scale(.98); transform-origin: bottom left; }
+      .js .popup[data-reveal].in, .js .modal[data-reveal].in { transform: none; }
+      /* Payment flow: each step's accent rule draws left to right, in order */
+      .js .step::before { transform: scaleX(0); transition: transform 700ms cubic-bezier(0.645, 0.045, 0.355, 1) calc(var(--d, 0ms) + 250ms); }
+      .js .step.in::before { transform: scaleX(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      form.waitlist, form.waitlist button, header nav a, .tree-row code { transition: none; }
+      form.waitlist button:active { transform: none; }
+      .note.enter { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -202,24 +244,26 @@
   <main>
     <div class="wrap hero">
       <div>
-        <p class="label">A Chrome extension boilerplate</p>
-        <h1>The boring parts of a <em>paid</em> extension, already done.</h1>
-        <p class="lead">Sign-up, a Pro paywall and payments, wired across the popup, the service worker and content scripts. You write the feature people pay for; ExtensionKit handles who's allowed to use it.</p>
-        <div class="stack">
+        <p class="label" data-reveal>A Chrome extension boilerplate</p>
+        <h1 data-reveal>The boring parts of a <em>paid</em> extension, already done.</h1>
+        <p class="lead" data-reveal>Sign-up, a Pro paywall and payments, wired across the popup, the service worker and content scripts. You write the feature people pay for; ExtensionKit handles who's allowed to use it.</p>
+        <div class="stack" data-reveal>
           <span>React + TypeScript + Vite</span>
           <span>Supabase auth</span>
           <span>Stripe or Lemon Squeezy</span>
         </div>
 
-        <form class="waitlist" data-waitlist novalidate>
-          <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" required aria-label="Email address" />
-          <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button type="submit">Join the waitlist</button>
-        </form>
-        <p class="note" data-note>Launching soon. People on the list get the early-bird price.</p>
+        <div class="signup" data-reveal>
+          <form class="waitlist" data-waitlist novalidate>
+            <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required aria-label="Email address" />
+            <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <button type="submit">Join the waitlist</button>
+          </form>
+          <p class="note" data-note role="status" aria-live="polite">Launching soon. People on the list get the early-bird price.</p>
+        </div>
       </div>
 
-      <div>
+      <div data-reveal>
         <div class="specimen" role="img" aria-label="The extension's popup showing a signed-in user on the Free plan, and the in-page paywall modal over a website.">
           <div class="page">
             <div style="width:62%"></div><div style="width:88%"></div><div style="width:74%"></div><div style="width:40%"></div>
@@ -227,7 +271,7 @@
           </div>
           <div class="scrim"></div>
 
-          <div class="modal ui">
+          <div class="modal ui" data-reveal>
             <div class="star">★</div>
             <h5>Premium feature</h5>
             <p>This action is available to Pro users only.</p>
@@ -235,7 +279,7 @@
             <div class="cta">Upgrade to Pro</div>
           </div>
 
-          <div class="popup ui">
+          <div class="popup ui" data-reveal>
             <h4>ExtensionKit Demo</h4>
             <p class="sub">React · Vite · TypeScript · Tailwind</p>
             <div class="row" style="justify-content:flex-start"><span class="av">A</span><div><small>Signed in as</small>ada@example.com</div></div>
@@ -257,22 +301,22 @@
     <section id="inside">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">What's inside</p>
-          <div>
+          <p class="label" data-reveal>What's inside</p>
+          <div data-reveal>
             <h2>One repository. Every piece has a job.</h2>
             <p>No framework of our own to learn. It's a regular Vite + React project, and every file below is code you can read and change.</p>
           </div>
         </div>
         <div class="tree">
           <div class="tree-list">
-            <div class="tree-row"><code><b>src/content/</b>proAction.ts</code><p>Where your Pro feature goes. It runs on the page only after the user has been confirmed as Pro.</p></div>
-            <div class="tree-row"><code><b>src/</b>config.ts</code><p>Name, button label and paywall copy in one place.</p></div>
-            <div class="tree-row"><code><b>src/shared/</b>messages.ts</code><p>Typed messages between popup, background and tabs. A wrong payload fails at compile time.</p></div>
-            <div class="tree-row"><code><b>src/background/</b>auth.ts</code><p>Supabase sign-up and sign-in. The session lives in <span class="mono">chrome.storage</span>; pages only ever see the user's id and email.</p></div>
-            <div class="tree-row"><code><b>src/content/</b>FloatingButton.tsx</code><p>In-page UI in a Shadow DOM, so the host site's CSS can't break it. Users can drag it or hide it per site.</p></div>
-            <div class="tree-row"><code><b>supabase/</b>migrations/</code><p>The <span class="mono">profiles</span> table, row-level security, and a trigger that creates a profile on sign-up.</p></div>
-            <div class="tree-row"><code><b>supabase/</b>functions/</code><p>Webhook handlers for Stripe and Lemon Squeezy, with signature checks.</p></div>
-            <div class="tree-row"><code><b>docs/</b></code><p>Setup guides for each payment provider and for publishing to the Chrome Web Store, plus a privacy policy template.</p></div>
+            <div class="tree-row" data-reveal><code><b>src/content/</b>proAction.ts</code><p>Where your Pro feature goes. It runs on the page only after the user has been confirmed as Pro.</p></div>
+            <div class="tree-row" data-reveal><code><b>src/</b>config.ts</code><p>Name, button label and paywall copy in one place.</p></div>
+            <div class="tree-row" data-reveal><code><b>src/shared/</b>messages.ts</code><p>Typed messages between popup, background and tabs. A wrong payload fails at compile time.</p></div>
+            <div class="tree-row" data-reveal><code><b>src/background/</b>auth.ts</code><p>Supabase sign-up and sign-in. The session lives in <span class="mono">chrome.storage</span>; pages only ever see the user's id and email.</p></div>
+            <div class="tree-row" data-reveal><code><b>src/content/</b>FloatingButton.tsx</code><p>In-page UI in a Shadow DOM, so the host site's CSS can't break it. Users can drag it or hide it per site.</p></div>
+            <div class="tree-row" data-reveal><code><b>supabase/</b>migrations/</code><p>The <span class="mono">profiles</span> table, row-level security, and a trigger that creates a profile on sign-up.</p></div>
+            <div class="tree-row" data-reveal><code><b>supabase/</b>functions/</code><p>Webhook handlers for Stripe and Lemon Squeezy, with signature checks.</p></div>
+            <div class="tree-row" data-reveal><code><b>docs/</b></code><p>Setup guides for each payment provider and for publishing to the Chrome Web Store, plus a privacy policy template.</p></div>
           </div>
         </div>
       </div>
@@ -281,17 +325,17 @@
     <section id="payments">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">Payments</p>
-          <div>
+          <p class="label" data-reveal>Payments</p>
+          <div data-reveal>
             <h2>From "Upgrade" to Pro, without a server of your own.</h2>
             <p>The checkout carries the user's id. When the payment clears, a Supabase Edge Function flips the flag the extension reads.</p>
           </div>
         </div>
         <div class="flow">
-          <div class="step"><span class="n">01 — Extension</span><h3>User clicks Upgrade</h3><p>The background opens your checkout link, tagged with the Supabase user id.</p></div>
-          <div class="step"><span class="n">02 — Provider</span><h3>They pay</h3><p>Stripe Checkout or Lemon Squeezy handles cards, taxes and receipts.</p></div>
-          <div class="step"><span class="n">03 — Edge Function</span><h3>Webhook is verified</h3><p>The signature is checked, then <code>profiles.is_pro</code> is set with the service role.</p></div>
-          <div class="step"><span class="n">04 — Extension</span><h3>Pro unlocks</h3><p>The next <code>CHECK_PRO_STATUS</code> returns true. Refunds and cancellations turn it off again.</p></div>
+          <div class="step" data-reveal><span class="n">01 — Extension</span><h3>User clicks Upgrade</h3><p>The background opens your checkout link, tagged with the Supabase user id.</p></div>
+          <div class="step" data-reveal><span class="n">02 — Provider</span><h3>They pay</h3><p>Stripe Checkout or Lemon Squeezy handles cards, taxes and receipts.</p></div>
+          <div class="step" data-reveal><span class="n">03 — Edge Function</span><h3>Webhook is verified</h3><p>The signature is checked, then <code>profiles.is_pro</code> is set with the service role.</p></div>
+          <div class="step" data-reveal><span class="n">04 — Extension</span><h3>Pro unlocks</h3><p>The next <code>CHECK_PRO_STATUS</code> returns true. Refunds and cancellations turn it off again.</p></div>
         </div>
         <p class="flow-note mono" style="color:var(--muted)">Lemon Squeezy works in countries where Stripe isn't available. Switching providers is one line in .env.</p>
       </div>
@@ -300,14 +344,14 @@
     <section id="code">
       <div class="wrap">
         <div class="sec-head">
-          <p class="label">Code</p>
-          <div>
+          <p class="label" data-reveal>Code</p>
+          <div data-reveal>
             <h2>Gating a feature takes one message.</h2>
             <p>Declare a message once and call it from anywhere, with types on both sides.</p>
           </div>
         </div>
         <div class="code-grid">
-          <figure class="code">
+          <figure class="code" data-reveal>
             <figcaption><span>src/content/FloatingButton.tsx</span><span>content script</span></figcaption>
 <pre><span class="k">const</span> isPro = <span class="k">await</span> <span class="f">sendToBackground</span>(<span class="s">'CHECK_PRO_STATUS'</span>)
 
@@ -318,7 +362,7 @@
 
 <span class="k">await</span> <span class="f">runProAction</span>() <span class="c">// your feature</span></pre>
           </figure>
-          <figure class="code">
+          <figure class="code" data-reveal>
             <figcaption><span>src/shared/messages.ts</span><span>add your own</span></figcaption>
 <pre><span class="k">export interface</span> <span class="t">BackgroundMessages</span> {
   CHECK_PRO_STATUS: { req: <span class="t">void</span>; res: <span class="t">boolean</span> }
@@ -333,8 +377,8 @@
 
     <section>
       <div class="wrap scope">
-        <p class="label">Scope</p>
-        <div class="yes">
+        <p class="label" data-reveal>Scope</p>
+        <div class="yes" data-reveal>
           <h3>Included</h3>
           <ul>
             <li>Full source code</li>
@@ -346,7 +390,7 @@
             <li>Payment and Web Store guides</li>
           </ul>
         </div>
-        <div class="no">
+        <div class="no" data-reveal>
           <h3>Not included (yet)</h3>
           <ul>
             <li>Firefox and Safari builds</li>
@@ -361,21 +405,21 @@
 
     <section>
       <div class="wrap letter">
-        <p class="label">Why this exists</p>
-        <blockquote>“Most of the work in a paid extension isn't the feature. It's keeping a session alive across a popup, a service worker that keeps going to sleep, and scripts running inside other people's websites — and then knowing who has paid. I built that part once, carefully, so you don't have to.”</blockquote>
-        <cite>— Ramiro Fernandez, maker of ExtensionKit</cite>
+        <p class="label" data-reveal>Why this exists</p>
+        <blockquote data-reveal>“Most of the work in a paid extension isn't the feature. It's keeping a session alive across a popup, a service worker that keeps going to sleep, and scripts running inside other people's websites — and then knowing who has paid. I built that part once, carefully, so you don't have to.”</blockquote>
+        <cite data-reveal>— Ramiro Fernandez, maker of ExtensionKit</cite>
       </div>
     </section>
 
     <section id="faq">
       <div class="wrap faq">
-        <p class="label spacer">FAQ</p>
-        <div>
+        <p class="label spacer" data-reveal>FAQ</p>
+        <div data-reveal>
           <div class="qa"><dt>Who is it for?</dt><dd>Developers who want to sell a Chrome extension — a side project, a micro-SaaS or client work — without spending weeks on auth and billing.</dd></div>
           <div class="qa"><dt>Do I need Stripe?</dt><dd>No. Use Stripe or Lemon Squeezy; it's one setting. Lemon Squeezy also handles sales tax for you.</dd></div>
           <div class="qa"><dt>Do I need a backend?</dt><dd>Only Supabase. Its free tier is enough to start, and the webhooks run as Edge Functions there.</dd></div>
         </div>
-        <div>
+        <div data-reveal>
           <div class="qa"><dt>Can I use it for several products?</dt><dd>Yes, including client projects. You just can't resell the boilerplate itself.</dd></div>
           <div class="qa"><dt>Is it a framework?</dt><dd>No. It's a plain Vite + React project. There's nothing to stay locked into.</dd></div>
           <div class="qa"><dt>When does it launch?</dt><dd>Soon. The waitlist hears first and gets the early-bird price.</dd></div>
@@ -385,14 +429,16 @@
 
     <section id="join">
       <div class="wrap closing">
-        <p class="label">Waitlist</p>
-        <h2 style="margin:20px 0 36px">Spend your weekend on the <em>feature</em>, not the plumbing.</h2>
-        <form class="waitlist" data-waitlist novalidate>
-          <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" required aria-label="Email address" />
-          <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button type="submit">Join the waitlist</button>
-        </form>
-        <p class="note" data-note></p>
+        <p class="label" data-reveal>Waitlist</p>
+        <h2 data-reveal style="margin:20px 0 36px">Spend your weekend on the <em>feature</em>, not the plumbing.</h2>
+        <div data-reveal>
+          <form class="waitlist" data-waitlist novalidate>
+            <input type="email" name="email" placeholder="you@company.dev" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required aria-label="Email address" />
+            <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <button type="submit">Join the waitlist</button>
+          </form>
+          <p class="note" data-note role="status" aria-live="polite"></p>
+        </div>
       </div>
     </section>
   </main>
@@ -415,19 +461,63 @@
     function setNote(note, text, tone) {
       note.textContent = text
       note.className = 'note' + (tone ? ' ' + tone : '')
+      void note.offsetWidth // restart the entrance animation on every new message
+      note.classList.add('enter')
+    }
+
+    // Reveal content once as it enters the viewport. Elements that enter together are staggered.
+    const revealables = document.querySelectorAll('[data-reveal]')
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        let i = 0
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          entry.target.style.setProperty('--d', Math.min(i++, 6) * 80 + 'ms')
+          entry.target.classList.add('in')
+          io.unobserve(entry.target)
+        })
+      }, { rootMargin: '0px 0px -8% 0px' })
+      revealables.forEach((el) => io.observe(el))
+    } else {
+      revealables.forEach((el) => el.classList.add('in'))
     }
 
     document.querySelectorAll('[data-waitlist]').forEach((form) => {
       const note = form.nextElementSibling
       const button = form.querySelector('button')
+      const input = form.email
+      const defaultNote = note.textContent
+      let resetTimer
+
+      function setError(on) {
+        form.classList.toggle('err', on)
+        if (on) input.setAttribute('aria-invalid', 'true')
+        else input.removeAttribute('aria-invalid')
+      }
+
+      input.addEventListener('input', () => {
+        if (!form.classList.contains('err')) return
+        setError(false)
+        setNote(note, defaultNote)
+      })
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault()
-        const email = form.email.value.trim().toLowerCase()
+        const email = input.value.trim().toLowerCase()
         if (form.company.value) return // honeypot: bots fill hidden fields
-        if (!EMAIL_RE.test(email)) return setNote(note, 'That email address doesn’t look right.', 'err')
+        if (!EMAIL_RE.test(email)) {
+          setError(true)
+          input.focus()
+          return setNote(note, 'That email address doesn’t look right.', 'err')
+        }
 
+        setError(false)
+        clearTimeout(resetTimer)
+        form.classList.remove('done')
+        button.style.minWidth = button.offsetWidth + 'px' // keep the width steady while the label changes
         button.disabled = true
         button.textContent = 'Joining…'
+        let joined = false
         try {
           const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
             method: 'POST',
@@ -441,8 +531,10 @@
           })
           if (res.ok) {
             form.reset()
+            joined = true
             setNote(note, 'You’re on the list. I’ll email you when it launches.', 'ok')
           } else if (res.status === 409) {
+            joined = true
             setNote(note, 'You’re already on the list.', 'ok')
           } else {
             throw new Error(`HTTP ${res.status}`)
@@ -452,7 +544,18 @@
           setNote(note, 'Something went wrong. Please try again in a moment.', 'err')
         } finally {
           button.disabled = false
-          button.textContent = 'Join the waitlist'
+          if (joined) {
+            form.classList.add('done')
+            button.textContent = 'Joined ✓'
+            resetTimer = setTimeout(() => {
+              form.classList.remove('done')
+              button.textContent = 'Join the waitlist'
+              button.style.minWidth = ''
+            }, 3000)
+          } else {
+            button.textContent = 'Join the waitlist'
+            button.style.minWidth = ''
+          }
         }
       })
     })
