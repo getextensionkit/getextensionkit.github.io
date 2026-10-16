@@ -149,7 +149,7 @@
   <main>
     <div class="col intro">
       <h1>A Chrome extension starter with sign-in and payments already working</h1>
-      <p class="lead">ExtensionKit is a Manifest V3 project in <strong>React, TypeScript and Vite</strong>. Users can create an account, run into a paywall, pay with <strong>Stripe or Lemon Squeezy</strong>, and get Pro features unlocked. What's left for you is the feature you want to charge for.</p>
+      <p class="lead">ExtensionKit is a Manifest V3 project in <strong>React, TypeScript and Vite</strong>. Users can create an account, run into a paywall, pay with <strong>Stripe or Lemon Squeezy</strong>, and get Pro features unlocked. Paid features run on the server, so they can't be switched on by editing the extension. What's left for you is the feature you want to charge for.</p>
 
       <div class="signup">
         <form class="waitlist" data-waitlist novalidate>
@@ -185,9 +185,13 @@
   config.ts      <span class="c"># name, button label and paywall copy</span>
 supabase/
   migrations/    <span class="c"># profiles table, row-level security, sign-up trigger</span>
-  functions/     <span class="c"># Stripe and Lemon Squeezy webhooks, signatures checked</span>
+  functions/
+    pro-api/     <span class="c"># runs paid features after re-checking the plan on the server</span>
+    *-webhook/   <span class="c"># Stripe and Lemon Squeezy, signatures checked</span>
 docs/            <span class="c"># payment setup, Chrome Web Store, privacy policy template</span>
-tests/           <span class="c"># Vitest: messages, checkout links, webhook logic</span></pre>
+tests/           <span class="c"># Vitest: messages, checkout links, webhooks, Pro actions</span>
+AGENTS.md        <span class="c"># architecture and rules for Claude Code, Cursor, Codex, Copilot</span>
+.claude/skills/  <span class="c"># add-pro-feature, add-message, ship-checklist</span></pre>
         <p>About 1,500 lines of TypeScript in total. <code>npm run check</code> runs the type checker, ESLint, Prettier and the tests. There's also a script that generates a key so your extension ID is the same on every machine, which the sign-up confirmation link depends on.</p>
       </div>
     </section>
@@ -208,16 +212,27 @@ tests/           <span class="c"># Vitest: messages, checkout links, webhook log
 
     <section id="code">
       <div class="col">
-        <h2>Gating a feature</h2>
-        <p>This is the click handler of the in-page button, trimmed a little. Messages are typed, so the compiler knows <code>CHECK_PRO_STATUS</code> returns a boolean.</p>
-        <p class="file">src/content/FloatingButton.tsx</p>
-<pre><span class="k">const</span> isPro = <span class="k">await</span> sendToBackground(<span class="s">'CHECK_PRO_STATUS'</span>).catch(() => <span class="k">false</span>)
-<span class="k">if</span> (!isPro) {
-  setShowPaywall(<span class="k">true</span>)
-  <span class="k">return</span>
+        <h2>A paywall you can't patch out</h2>
+        <p>Most extension paywalls are an <code>if</code> inside the extension, and anyone can edit the extension. Here the check in the extension only decides whether to show the paywall. The feature itself runs in a Supabase Edge Function that verifies the user's token and re-reads their plan on every call: 401 if they aren't signed in, 402 if they haven't paid.</p>
+        <p class="file">supabase/functions/pro-api/actions.ts</p>
+<pre><span class="k">export function</span> summarize(input: <span class="k">unknown</span>) {
+  <span class="c">// validate input, call your AI provider with a key</span>
+  <span class="c">// that never leaves the server, return the result</span>
 }
-<span class="k">await</span> runProAction()  <span class="c">// src/content/proAction.ts</span>
-setToast(config.proActionSuccess)</pre>
+
+<span class="k">export const</span> PRO_ACTIONS = { <span class="s">'text-stats'</span>: textStats, summarize }</pre>
+        <p class="file">src/content/proAction.ts</p>
+<pre><span class="k">const</span> { summary } = <span class="k">await</span> callProAction(<span class="s">'summarize'</span>, { text })</pre>
+        <p class="muted" style="margin-top:16px">Inputs and results are typed on both sides. The demo action counts the words on the current page and estimates reading time.</p>
+      </div>
+    </section>
+
+    <section id="agents">
+      <div class="col">
+        <h2>Ready for your coding agent</h2>
+        <p>The repository comes with an <code>AGENTS.md</code> that explains the architecture, how Pro is enforced and the rules to follow (no secrets in the extension, no tokens in content scripts). Claude Code, Cursor, Codex and Copilot read it on their own.</p>
+        <p>With Claude Code you also get three project skills: <code>add-pro-feature</code> builds a server-checked paid feature end to end, <code>add-message</code> adds a typed message between contexts, and <code>ship-checklist</code> tells you what's missing before you publish.</p>
+<pre><span class="c">&gt;</span> Add a Pro feature that summarizes the current page with an AI model.</pre>
       </div>
     </section>
 
@@ -231,9 +246,11 @@ setToast(config.proActionSuccess)</pre>
               <li>All of the source code</li>
               <li>Email and password sign-up with confirmation</li>
               <li>Paywall dialog and plan card</li>
+              <li>Paid features checked on the server</li>
               <li>Stripe and Lemon Squeezy webhooks</li>
               <li>Unit tests, ESLint and Prettier set up</li>
               <li>Guides for payments and the Web Store</li>
+              <li>AGENTS.md and Claude Code skills</li>
             </ul>
           </div>
           <div class="no">
