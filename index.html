@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ExtensionKit: the Chrome extension starter with accounts and payments</title>
-  <meta name="description" content="A Manifest V3 starter in React and TypeScript with Supabase sign-in, an in-page paywall, server-checked Pro features and Stripe or Lemon Squeezy payments already wired up." />
+  <meta name="description" content="A Manifest V3 starter in React and TypeScript with Supabase and Google sign-in, an in-page paywall, server-checked Pro features and Stripe or Lemon Squeezy payments already wired up." />
   <link rel="canonical" href="https://getextensionkit.github.io/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="ExtensionKit" />
@@ -393,7 +393,7 @@
       <div class="wrap points">
         <div>
           <h3>Sign-in that survives the service worker</h3>
-          <p>Supabase email and password auth with confirmation. The session lives in <code>chrome.storage</code>; web pages only ever see the user's id and email.</p>
+          <p>Email and password with confirmation and password reset, or Continue with Google. The session lives in <code>chrome.storage</code>; web pages only ever see the user's id and email.</p>
           <p class="path">src/background/auth.ts</p>
         </div>
         <div>
@@ -576,19 +576,21 @@ AGENTS.md         <span class="c">rules for coding agents</span>
               <ul>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Full source code</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Email sign-up with confirmation</li>
+                <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Continue with Google</li>
+                <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Password reset and account deletion</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Paywall and plan card</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Pro features checked on the server</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Stripe and Lemon Squeezy webhooks</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Tests, ESLint, Prettier</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>AGENTS.md and Claude Code skills</li>
                 <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Setup and publishing guides</li>
+                <li><svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" /></svg>Chrome, Edge, Brave and Opera</li>
               </ul>
             </div>
             <div class="no">
               <h3>Not yet</h3>
               <ul>
                 <li><svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>Firefox and Safari builds</li>
-                <li><svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>Google sign-in</li>
                 <li><svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>Team or per-seat billing</li>
                 <li><svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>Usage limits</li>
                 <li><svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>Translations</li>
