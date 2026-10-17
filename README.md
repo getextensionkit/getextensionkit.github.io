@@ -13,3 +13,10 @@ git branch -D landing-publish
 ```
 
 Waitlist signups go to the `waitlist` table (see `supabase/waitlist.sql`). View them in Supabase → Table Editor.
+
+## Shared Supabase project (seller only)
+
+The `saas-extension` Supabase project is shared by the ExtensionKit dev demo and **ReadStats**
+(private repo `ramaf2003/readstats`). Deploy `pro-api` **only from the readstats repo**: its `actions.ts`
+includes the `readability` action, and deploying this repo's copy would remove it and break ReadStats Pro.
+`delete-account` and `lemonsqueezy-webhook` are identical in both repos.
