@@ -186,6 +186,12 @@
     .skills { margin-top: 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .prompt { grid-column: 1 / -1; padding: 22px 26px; border-radius: 16px; background: var(--bg-2); font: 15px/1.6 var(--mono); color: var(--ink); }
     .prompt span { color: var(--indigo); }
+    .built { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px 80px; align-items: center; }
+    .built .lede { max-width: 560px; }
+    .built .lede code { font-size: .9em; }
+    .built-links { margin-top: 28px; }
+    .built img { width: 300px; height: auto; border-radius: 16px; box-shadow: var(--shadow-lg); }
+    @media (max-width: 720px) { .built { grid-template-columns: minmax(0, 1fr); } .built img { justify-self: center; width: min(300px, 100%); } }
     .skill { padding: 26px; border-radius: 16px; border: 1px solid var(--line); }
     .skill code { font-size: 15px; font-weight: 500; color: var(--ink); }
     .skill p { margin-top: 8px; font-size: 15px; color: var(--ink-2); }
@@ -547,6 +553,18 @@
           <div class="skill"><code>add-message</code><p>Adds a typed message between popup, background and page.</p></div>
           <div class="skill"><code>ship-checklist</code><p>Lists what's missing before you publish to the Web Store.</p></div>
         </div>
+      </div>
+    </section>
+
+    <section class="sec" id="built">
+      <div class="wrap built">
+        <div>
+          <p class="tag green">Built with ExtensionKit</p>
+          <h2 class="h2">ReadStats, live on the Chrome Web Store</h2>
+          <p class="lede">I built a real extension from this kit to prove it ships. Reading time and word count are free and run in the page. The readability report is Pro, sold for $5 through Lemon Squeezy and computed in <code>pro-api</code>, so it can't be unlocked by editing the extension.</p>
+          <p class="built-links"><a class="btn" href="https://chromewebstore.google.com/detail/cfjdlmjggpcejbankmeodhpcngpfdpfj" target="_blank" rel="noopener">See it on the Chrome Web Store</a></p>
+        </div>
+        <img src="img/readstats-panel.png" width="355" height="545" loading="lazy" alt="ReadStats panel on an article: 24 min reading time, 5,572 words, and a Pro readability report with a reading ease of 50.6, grade level 8.1 and the longest sentences." />
       </div>
     </section>
 
