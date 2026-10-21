@@ -10,7 +10,7 @@
   <meta property="og:site_name" content="ExtensionKit" />
   <meta property="og:url" content="https://getextensionkit.github.io/" />
   <meta property="og:title" content="ExtensionKit: the Chrome extension starter with accounts and payments" />
-  <meta property="og:description" content="Sign-up, an in-page paywall and Stripe or Lemon Squeezy payments, already working in a Manifest V3 project. Join the waitlist for the early-bird price." />
+  <meta property="og:description" content="Sign-up, an in-page paywall and Stripe or Lemon Squeezy payments, already working in a Manifest V3 project. $79 once, lifetime updates." />
   <meta property="og:image" content="https://getextensionkit.github.io/img/og.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="ExtensionKit: the Chrome extension starter with accounts and payments built in, next to the extension popup in Chrome." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ExtensionKit: the Chrome extension starter with accounts and payments" />
-  <meta name="twitter:description" content="Sign-up, an in-page paywall and Stripe or Lemon Squeezy payments, already working. Join the waitlist for the early-bird price." />
+  <meta name="twitter:description" content="Sign-up, an in-page paywall and Stripe or Lemon Squeezy payments, already working. $79 once, lifetime updates." />
   <meta name="twitter:image" content="https://getextensionkit.github.io/img/og.png" />
   <meta name="twitter:image:alt" content="ExtensionKit: the Chrome extension starter with accounts and payments built in, next to the extension popup in Chrome." />
   <meta name="color-scheme" content="light" />
@@ -233,6 +233,9 @@
     .cta .wrap { display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 48px 80px; align-items: end; }
     .cta .lede { color: rgba(255, 255, 255, .78); margin-top: 18px; }
     .cta .display { font-size: clamp(40px, 5vw, 68px); max-width: 680px; }
+    .btn.buy { height: 52px; padding: 0 28px; font-size: 16px; }
+    .cta .btn { background: #fff; color: var(--ink); }
+    .cta .btn:hover { background: #eef0ff; }
     .cta form.waitlist { border-color: transparent; }
     .cta form.waitlist:focus-within { box-shadow: 0 0 0 4px rgba(255, 255, 255, .35); }
     .cta .note { color: rgba(255, 255, 255, .75); }
@@ -303,7 +306,7 @@
         <a href="#code">Security</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn" href="#join">Join the waitlist</a>
+      <a class="btn" href="https://ramirofernandez.lemonsqueezy.com/checkout/buy/ac610234-572d-4f9f-84d0-cdfcd44b691b">Get ExtensionKit</a>
     </div>
   </header>
 
@@ -314,12 +317,8 @@
         <div class="hero-row">
           <p class="lede">A Manifest V3 project in React and TypeScript. Your users sign up, hit a paywall, pay through Stripe or Lemon Squeezy and get Pro. All of that already works, so you can spend your time on the feature they pay for.</p>
           <div class="signup">
-            <form class="waitlist" data-waitlist novalidate>
-              <input type="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required aria-label="Email address" />
-              <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-              <button class="btn" type="submit">Join the waitlist</button>
-            </form>
-            <p class="note" data-note role="status" aria-live="polite">Launching soon. The waitlist gets the early-bird price.</p>
+            <a class="btn buy" href="https://ramirofernandez.lemonsqueezy.com/checkout/buy/ac610234-572d-4f9f-84d0-cdfcd44b691b">Get ExtensionKit · $79</a>
+            <p class="note">One-time payment, lifetime updates, 30-day refund.</p>
           </div>
         </div>
       </div>
@@ -664,8 +663,8 @@ AGENTS.md         <span class="c">rules for coding agents</span>
             <p>Email me within 30 days of buying and I'll refund you in full, no questions asked.</p>
           </details>
           <details>
-            <summary>When does it launch?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3.5v11M3.5 9h11" /></svg></summary>
-            <p>Soon. People on the waitlist hear first and get the early-bird price.</p>
+            <summary>Is it available now?<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3.5v11M3.5 9h11" /></svg></summary>
+            <p>It’s out now. Pay once and download the full source code right away.</p>
           </details>
         </div>
       </div>
@@ -675,15 +674,11 @@ AGENTS.md         <span class="c">rules for coding agents</span>
       <div class="wrap">
         <div>
           <h2 class="display">Start from an extension that already gets paid</h2>
-          <p class="lede">One email when it launches, with the early-bird price. Pay once, lifetime updates, 30-day refund.</p>
+          <p class="lede">Download the full source code today and build the feature people pay for.</p>
         </div>
         <div class="signup">
-          <form class="waitlist" data-waitlist novalidate>
-            <input type="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required aria-label="Email address" />
-            <input type="text" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-            <button class="btn" type="submit">Join the waitlist</button>
-          </form>
-          <p class="note" data-note role="status" aria-live="polite"></p>
+          <a class="btn buy" href="https://ramirofernandez.lemonsqueezy.com/checkout/buy/ac610234-572d-4f9f-84d0-cdfcd44b691b">Get ExtensionKit · $79</a>
+            <p class="note">One-time payment, lifetime updates, 30-day refund.</p>
         </div>
       </div>
     </section>
@@ -696,95 +691,6 @@ AGENTS.md         <span class="c">rules for coding agents</span>
     </div>
   </footer>
   <script>
-    // Waitlist signups go straight to a Supabase table that only allows inserts (see supabase/waitlist.sql).
-    // The publishable key is meant to be public; row-level security is what protects the data.
-    const SUPABASE_URL = 'https://jrdttkjghrczdautwvej.supabase.co'
-    const SUPABASE_KEY = 'sb_publishable_m553ISlAEV4Ms9IT3TjdQA_lVamr9BU'
-    const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
-    const source = (new URLSearchParams(location.search).get('ref') || 'landing').slice(0, 64)
-
-    function setNote(note, text, tone) {
-      note.textContent = text
-      note.className = 'note' + (tone ? ' ' + tone : '')
-    }
-
-    document.querySelectorAll('[data-waitlist]').forEach((form) => {
-      const note = form.nextElementSibling
-      const button = form.querySelector('button')
-      const input = form.email
-      const defaultNote = note.textContent
-      let resetTimer
-
-      function setInvalid(on) {
-        if (on) input.setAttribute('aria-invalid', 'true')
-        else input.removeAttribute('aria-invalid')
-      }
-
-      input.addEventListener('input', () => {
-        if (!input.hasAttribute('aria-invalid')) return
-        setInvalid(false)
-        setNote(note, defaultNote)
-      })
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault()
-        const email = input.value.trim().toLowerCase()
-        if (form.company.value) return // honeypot: bots fill hidden fields
-        if (!EMAIL_RE.test(email)) {
-          setInvalid(true)
-          input.focus()
-          return setNote(note, 'Enter a full email address, like you@example.com.', 'err')
-        }
-
-        setInvalid(false)
-        clearTimeout(resetTimer)
-        form.classList.remove('done')
-        button.style.minWidth = button.offsetWidth + 'px' // keep the width steady while the label changes
-        button.disabled = true
-        button.textContent = 'Joining…'
-        let joined = false
-        try {
-          const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-            method: 'POST',
-            headers: {
-              apikey: SUPABASE_KEY,
-              Authorization: `Bearer ${SUPABASE_KEY}`,
-              'Content-Type': 'application/json',
-              Prefer: 'return=minimal',
-            },
-            body: JSON.stringify({ email, source }),
-          })
-          if (res.ok) {
-            form.reset()
-            joined = true
-            setNote(note, 'You’re on the list. I’ll email you when it launches.', 'ok')
-          } else if (res.status === 409) {
-            joined = true
-            setNote(note, 'You’re already on the list.', 'ok')
-          } else {
-            throw new Error(`HTTP ${res.status}`)
-          }
-        } catch (err) {
-          console.error(err)
-          setNote(note, 'Couldn’t join the list. Check your connection and try again.', 'err')
-        } finally {
-          button.disabled = false
-          if (joined) {
-            form.classList.add('done')
-            button.textContent = 'Joined'
-            resetTimer = setTimeout(() => {
-              form.classList.remove('done')
-              button.textContent = 'Join the waitlist'
-              button.style.minWidth = ''
-            }, 3000)
-          } else {
-            button.textContent = 'Join the waitlist'
-            button.style.minWidth = ''
-          }
-        }
-      })
-    })
-
     // Code tabs
     const tabs = [...document.querySelectorAll('[role=tab]')]
     function selectTab(tab) {
