@@ -70,13 +70,6 @@
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 22px; border-radius: 999px; border: 0; background: var(--ink); color: #fff; font: 500 15px var(--sans); text-decoration: none; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; touch-action: manipulation; transition: background-color 150ms ease, transform 120ms var(--ease-out); }
     .btn:hover { background: #30343c; }
     .btn:active { transform: scale(.97); }
-    form.waitlist { display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 20px; background: #fff; border: 1px solid var(--line-2); border-radius: 999px; transition: border-color 150ms ease, box-shadow 150ms ease; }
-    form.waitlist:focus-within { border-color: var(--indigo); box-shadow: 0 0 0 4px rgba(79, 70, 229, .16); }
-    form.waitlist:has([aria-invalid=true]) { border-color: var(--err); box-shadow: 0 0 0 4px rgba(192, 40, 27, .12); }
-    form.waitlist input[type=email] { flex: 1; min-width: 0; height: 44px; border: 0; outline: none; background: transparent; font: 16px var(--sans); color: var(--ink); }
-    form.waitlist input[type=email]::placeholder { color: var(--ink-3); }
-    form.waitlist .btn:disabled { background: #5b6170; cursor: progress; transform: none; }
-    form.waitlist.done .btn { background: var(--ok); }
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
     .note { margin: 10px 0 0 20px; font-size: 14px; color: var(--ink-3); min-height: 22px; }
     .note.ok { color: var(--ok); }
@@ -236,8 +229,6 @@
     .btn.buy { height: 52px; padding: 0 28px; font-size: 16px; }
     .cta .btn { background: #fff; color: var(--ink); }
     .cta .btn:hover { background: #eef0ff; }
-    .cta form.waitlist { border-color: transparent; }
-    .cta form.waitlist:focus-within { box-shadow: 0 0 0 4px rgba(255, 255, 255, .35); }
     .cta .note { color: rgba(255, 255, 255, .75); }
     .cta .note.ok { color: #c8f7dc; }
     .cta .note.err { color: #ffd4cf; }
@@ -279,8 +270,6 @@
       .stack .wrap { justify-content: flex-start; }
       .editor pre, .tree { font-size: 12.5px; }
       .editor pre { min-height: 0; padding: 18px; }
-      form.waitlist { flex-direction: column; align-items: stretch; padding: 6px; border-radius: 24px; }
-      form.waitlist input[type=email] { padding: 0 14px; }
     }
     @media (max-width: 640px) {
       .frame video, .pp, .steps { display: none; }
@@ -289,7 +278,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .btn, form.waitlist, .faq summary svg, .tabs button, .nav, .nav nav a, .pp, .steps button { transition: none; }
+      .btn, .faq summary svg, .tabs button, .nav, .nav nav a, .pp, .steps button { transition: none; }
       .btn:active { transform: none; }
       .faq details[open] p { animation: none; }
     }
